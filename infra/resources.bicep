@@ -14,7 +14,7 @@ var databaseSubnetName = 'database-subnet'
 var webappSubnetName = 'webapp-subnet'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
-  name: '${prefix}-vnet'
+  name: 'vnet-${prefix}'
   location: location
   tags: tags
   properties: {
@@ -73,7 +73,7 @@ resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
 
 resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
   parent: privateDnsZone
-  name: '${pgServerName}-link'
+  name: 'link-${pgServerName}'
   location: 'global'
   properties: {
     registrationEnabled: false
@@ -84,7 +84,7 @@ resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLin
 }
 
 resource web 'Microsoft.Web/sites@2022-03-01' = {
-  name: '${prefix}-app-service'
+  name: 'app-${prefix}'
   location: location
   tags: union(tags, { 'azd-service-name': 'web' })
   kind: 'app,linux'
@@ -147,7 +147,7 @@ resource web 'Microsoft.Web/sites@2022-03-01' = {
 }
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2021-03-01' = {
-  name: '${prefix}-service-plan'
+  name: 'plan-${prefix}'
   location: location
   tags: tags
   sku: {
@@ -159,7 +159,7 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2021-03-01' = {
 }
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-03-01-preview' = {
-  name: '${prefix}-workspace'
+  name: 'log-${prefix}'
   location: location
   tags: tags
   properties: any({

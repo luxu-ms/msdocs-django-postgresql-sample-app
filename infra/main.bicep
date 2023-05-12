@@ -1,13 +1,11 @@
-targetScope = 'subscription'
-
 @minLength(1)
 @maxLength(64)
 @description('Name which is used to generate a short unique hash for each resource')
-param name string
+param environmentName string = 'test'
 
 @minLength(1)
 @description('Primary location for all resources')
-param location string
+param location string = resourceGroup().location
 
 @secure()
 @description('PostGreSQL Server administrator password')
@@ -17,20 +15,13 @@ param databasePassword string
 @description('Django SECRET_KEY for securing signed data')
 param secretKey string
 
-var resourceToken = toLower(uniqueString(subscription().id, name, location))
-var tags = { 'azd-env-name': name }
-
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: '${name}-rg'
-  location: location
-  tags: tags
-}
+var resourceToken = toLower(uniqueString(resourceGroup().id, location))
+var tags = { 'azd-env-name': environmentName }
 
 module resources 'resources.bicep' = {
   name: 'resources'
-  scope: resourceGroup
   params: {
-    name: name
+    name: environmentName
     location: location
     resourceToken: resourceToken
     tags: tags
